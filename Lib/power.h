@@ -5,6 +5,10 @@
  *  Author: Karim Bouanane
  */ 
 
+#ifndef POWER_H_
+#define POWER_H_
+
+
 #define disable_adc()		(ADCSRA &= (uint8_t)~(1 << ADEN))
 #define enable_adc()		(ADCSRA |= (uint8_t)(1 << ADEN))
 
@@ -122,3 +126,5 @@ typedef enum
 #define clock_prescale_enable() (CLKPR = (uint8_t)(1 << CLKPCE))	// The CLKPCE bit is only updated when the other bits in CLKPR are simultaneously written to zero.
 #define clock_prescale_set(x)	(CLKPR = (uint8_t)(x))
 #define clock_prescale_get()	(clock_div_t)(CLKPR & (uint8_t)((1<<CLKPS0)|(1<<CLKPS1)|(1<<CLKPS2)|(1<<CLKPS3)))
+
+#endif /* POWER_H_ */
