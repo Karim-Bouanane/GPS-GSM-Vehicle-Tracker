@@ -2,7 +2,7 @@
 
 # **Dedication**
 
-    I dedicate this project to God Almighty my creator. I also dedicate this work to my two families who have offered me enormous encouragement and support, the first is my parents my sister my brother and my friend Ahmed Bangoura who is my second brother. My second family is the students of ENSIAS school who commit themselves and work hard to make the school better with their sense of help and sharing.
+  I dedicate this project to God Almighty my creator. I also dedicate this work to my two families who have offered me enormous encouragement and support, the first is my parents my sister my brother and my friend Ahmed Bangoura who is my second brother. My second family is the students of ENSIAS school who commit themselves and work hard to make the school better with their sense of help and sharing.
     
 # **Table of Conetents**
 
@@ -30,8 +30,6 @@
   - [Web Part](#web-part)
   - [Screen Shot of the Web Application](#screen-shot-of-the-web-application)
 - [**Experimental Results**](#experimental-results)
-</br>
-
 
 # **Wishlist**
 
@@ -43,7 +41,6 @@ For Version 2.0
 - Add authentification web page
 - Add option in web page to show history of tracking for specifi date
 
-</br>
 
 # **Source Files**
     .
@@ -66,8 +63,6 @@ For Version 2.0
     ├── LICENSE
     └── README.md    
 
-</br>
-
 # **Description**
 
 The purpose of this personal project was to design and realize a system that would be implemented in bikes and vehicles in order to keep track of them. Thus it is also designed to be build-able for small cost and be small as well. It is based on ATMEGA 328P (Arduino Nano), GPS module (BN-220) and GSM/GPRS module (Ai-Thinker A9).
@@ -79,7 +74,6 @@ The main challenges I am interessed in are:
 
 The idea behind how the system works will be described in details in [**Overview**](#overview) section.
 
-</br>
 
 # **Overview**
 
@@ -87,37 +81,31 @@ As shown in following image, the location is acquisitioned from satellite using 
 
 ![System Design Architecture](img/System_Design_Architecture.jpg)
 
-</br>
 
 # **Hardware**
 
 The microcontroller I choose to use for my first prototype was the arduino Nano, its specification satisfy my need for this project. It can operate at a frequency up tp 16Mhz, it can go into different sleep modes, it has enough GPIOS and UART-I2C-ADC peripherals which are the only ones needed for this application.
 
-</br>
 
 ## GPS Module
 
 The choice of this module depended on how much space and power it takes, its price and also for its availability on the aliexpress market. So the choice fell on the BN-220 module that weighs 5.3g, with a dimension of 22mm*20mm\*6mm and with current consumption of : 50mA (Active mode) - 7.5mA (standby mode) . This module is based on the ublox-M8030 chip, it contains a Flash memory that allows to save configuration and has an UART interface.
 
-</br>
 
 ## GSM/GPRS Module
 
 I chose the A9 module from AI-Thinker because it's lightweight, offers several functions and it is a low power module. It has an SD-Card and SIM-Card interface as well as a UART interface for communication with microcontrollers. The power consumption is lesser than 10mAh, also it can be powered with 3.7V Li-ion battery. Its size: 40mm*55mm.
 
-</br>
 
 ## Reduce Power
 
 There is a low power mode that can be enabled by software in modules when they are inactive and can minimize power consumption, but the value consummed cannot be considered negligible that why to extend more life battery I searched for latch switch circuit that can cut-off definitly power from modules connected to Arduino and thus reducing significantly power consumption.
 
-</br>
 
 ## Solar Panel
 
 Working on it for version 2.0
 
-</br>
 
 ## Bill of Materials
 
@@ -132,7 +120,6 @@ Switch Latch module |
 Lipo Battery Charger TP4056 | 0.4$
 **Total** | 24.6$
 
-</br>
 
 ## More Materials
 
@@ -144,7 +131,6 @@ I also used [USB power meter](https://a.aliexpress.com/_mN3DxiF) to keep trackin
 
 So I used [FTDI chip](https://a.aliexpress.com/_m0YMKaJ) that convert USB protocol to UART protocol to test each module directly, without using arduino which is tired work, since they have UART interface.
 
-</br>
 
 ## Circuit Design
 
@@ -152,13 +138,11 @@ The image below shows how wiring between different parts of system was done:
 
 ![Schematic Design](img/Schematic_Design_V1.jpg)
 
-</br>
 
 ## Measured Current
 
 In progress.
 
-</br>
 
 # **Software**
 
@@ -168,7 +152,6 @@ When client is connected, the server serves it the HTML webpage containing a map
 
 Currently the website is hosted at : https://gps--tracker.herokuapp.com
 
-</br>
 
 ## Firmware Part
 
@@ -178,7 +161,6 @@ So as to free up more space, I decided to get rid of the bootloader (it also mak
 
 In the following sections I describe how each module works and how to establish communication with them.
 
-</br>
 
 ## BN-220 GPS
 
@@ -188,7 +170,6 @@ The types of informations generated depends on which sentence of protocol NMEA i
 
 The communication is done through the UART interface and when data is received, microcontroller parse it, check it validity and and extract from it the informations needed.
 
-</br>
 
 ## A9 GSM/GPRS
 
@@ -198,7 +179,6 @@ The communication is also done through UART interface.
 
     Note: It's better to buy A9G module which is an upgraded version of the A9 with additional features like GPS and get rid of BN-220 gps module that I'm using. This will reduce more energy consumption. 
 
-</br>
 
 ## Execution flow diagram
 
@@ -208,7 +188,6 @@ The system execution will follow the steps described in this diagram :
     <image src="img/Execution_Flow _Diagram.png">
 </p>
 
-</br>
 
 ## Web Part
 
@@ -220,13 +199,11 @@ The following image clearly shows the web architecture :
 
 ![client_server](img/Client_server.png)
 
-</br>
 
 ## Screen Shot of the Web Application
 
 In progress.
 
-</br>
 
 # **Experimental Results**
 
