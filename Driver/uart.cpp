@@ -48,15 +48,15 @@ static bool isDataEmpty(void) { return UCSR0A & (1 << UDRE0); }
 void UART::send(char ch)
 {
     while (!isDataEmpty())
-        ;      // Wait for empty transmit buffer
-		
+        ; // Wait for empty transmit buffer
+
     UDR0 = ch; // Transmit data
-	
+
     while (!isTransmitComplete())
         ; // Wait for transmission to complete
 }
 
-void UART::sendString(const char *message, int len)
+void UART::sendString(const char *message, uint16_t len)
 {
     while (len-- && *message != '\0')
         send(*message++);
@@ -71,64 +71,59 @@ void UART::sendString(const char *message)
 void UART::read(char *data)
 {
     while (!isReceiveComplete())
-        ;         // Wait till data is received
-		
+        ; // Wait till data is received
+
     *data = UDR0; // return the data read
 }
 
 bool UART::read(char *data, uint32_t timeout)
 {
     uint32_t prev = uartTime->now(); // keep previous time before entering the while loop
-	
+
     while (!isReceiveComplete())
     {
         if (uartTime->now() - prev > timeout) // be sure not exceed the timeout
             return false;
     }
-	
+
     *data = UDR0; // return the data read
     return true;
 }
 
-size_t UART::readString(char *buff, size_t len)
-{
-	size_t i = len;
-	
-    while (len--)	// decrement until reaching 0
-    {
-		read(buff);	// read and store data in given array 
-			
-		if(*buff == 0 || *buff == '\n') // string terminator
-			break;
-			
-		++buff;	// move to the next address
-    }
-	
-	*buff = 0; // close array
-	return i - len; // return number of read characters
-}
-
 size_t UART::readString(char *buff, size_t len, uint32_t timeout)
 {
-	size_t i = len;
-	uint32_t prev = uartTime->now();
-	
-	while(len--)	// decrement until reaching 0
-	{
-		while (!isReceiveComplete())	// Wait till data is received 
-		{
-			if( (uartTime->now() - prev) > timeout ) // be sure not exceed the timeout
-				return 0;
-		}
+    size_t i = len;
 
-		*buff = UDR0; // store data in buff
-		
-		if(*buff == 0 || *buff == '\n') // verify string terminator
-			break;
-			
-		++buff;	// move to the next address
-	}
-	
-	*buff = 0; // close array
-	return i - len; // return number of read characters
+    while (len--) // decrement until reaching 0
+    {
+        if (read(buff, timeout) == false)
+            return 0; // timeout is reached
+
+        if (*buff == '\r' || *buff == '\n') // verify string terminator
+            break;
+
+        ++buff; // move to the next address in buff array
+    }
+
+    *buff = 0;      // close array
+    return i - len; // return number of read characters
+}
+
+size_t UART::readStringUntil(char terminator, char *buff, size_t len, uint32_t timeout)
+{
+    size_t i = len;
+
+    while (len--) // decrement until reaching 0
+    {
+        if (read(buff, timeout) == false)
+            return 0; // timeout is reached
+
+        if (*buff == terminator) // verify string terminator
+            break;
+
+        ++buff; // move to the next address in buff array
+    }
+
+    *buff = 0;      // close array
+    return i - len; // return number of read characters
 }

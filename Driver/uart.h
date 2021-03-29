@@ -33,11 +33,11 @@ public:
 	void setBaud(uint32_t baud);
 	void send(char);
 	void sendString(const char *message);
-	void sendString(const char *message, int len);
+	void sendString(const char *message, uint16_t len);
 	void read(char *data);
 	bool read(char *data, uint32_t timeout);
-	size_t readString(char *buff, size_t len);
-	size_t readString(char *buff, size_t len, uint32_t timeout);
+	size_t readString(char *buff, size_t len, uint32_t timeout=1000);
+	size_t readStringUntil(char terminator, char *buff, size_t len, uint32_t timeout=1000);
 };
 
 #endif /* UART_H_ */
