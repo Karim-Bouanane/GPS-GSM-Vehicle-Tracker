@@ -2,13 +2,13 @@
 
 # **Dedication**
 
-  I dedicate this project to God Almighty my creator. I also dedicate this work to my two families who have offered me enormous encouragement and support, the first is my parents my sister my brother and my friend Ahmed Bangoura who is my second brother. My second family is the students of ENSIAS school who commit themselves and work hard to make the school better with their sense of help and sharing.
+  I dedicate this project to God Almighty my creator. I also dedicate this work to my two families who have offered me enormous encouragement and support, the first is my parents my sister my brother and my friend Ahmed Bangoura who is my second brother. My second family is the students of ENSIAS school who commit themselves to hard work and to making the school better with their sense of help and sharing.
     
-# **Table of Conetents**
+# **Table of Content**
 
 - [**GPS/GPRS Vehicle Tracker**](#gpsgprs-vehicle-tracker)
 - [**Dedication**](#dedication)
-- [**Table of Conetents**](#table-of-conetents)
+- [**Table of Content**](#table-of-content)
 - [**Wishlist**](#wishlist)
 - [**Source Files**](#source-files)
 - [**Description**](#description)
@@ -34,12 +34,12 @@
 # **Wishlist**
 
 For Version 2.0
-- Switch to a smaller microcontroller like ATTINY-85
+- Improve to a smaller microcontroller like ATTINY-85
 - Use UBX protocol instead of NMEA protocol in GPS module
-- Make my system independent of the car battery
+- Make my system independent ofrom the car battery
 - Add car motion detection
 - Add authentification web page
-- Add option in web page to show history of tracking for specifi date
+- Add option in web page to show history of tracking for specific date
 
 
 # **Source Files**
@@ -65,19 +65,19 @@ For Version 2.0
 
 # **Description**
 
-The purpose of this personal project was to design and realize a system that would be implemented in bikes and vehicles in order to keep track of them. Thus it is also designed to be build-able for small cost and be small as well. It is based on ATMEGA 328P (Arduino Nano), GPS module (BN-220) and GSM/GPRS module (Ai-Thinker A9).
+The purpose of this personal project is to design and realize a system that would be implemented in bikes and vehicles in order to keep track of them. Thus it is also designed to be build-able for small cost and be small as well. It is based on ATMEGA 328P (Arduino Nano), GPS module (BN-220) and GSM/GPRS module (Ai-Thinker A9).
 
-The main challenges I am interessed in are:
+The main challenges I am endeavouring to overcome in are:
 - How small can I make my prototype hardware ?
 - How small can I make my software ?
 - How long can my system stay alive in self-powered mode ?
 
-The idea behind how the system works will be described in details in [**Overview**](#overview) section.
+The idea behind how the system works will be described in details in the [**Overview**](#overview) section.
 
 
 # **Overview**
 
-As shown in following image, the location is acquisitioned from satellite using GPS receiver, then it will be preprocessed with Arduino Nano microcontroller which after that will send the location coordination to the server through GPRS module that will contain a valid SIM card. The request goes through the internet to the server side where website and database are located. The data acquired will be saved in database and displayed in the user's browser as a marker on the map.
+As shown in the following image, the location is acquired from satellite using GPS receiver, then it will be preprocessed with Arduino Nano microcontroller which after that will send the location coordinates to the server through GPRS module that will contain a valid SIM card. The request goes through internet to the server side where the website and database are located. The data acquired will be saved in database and displayed on the user's browser as a marker on the map.
 
 ![System Design Architecture](img/System_Design_Architecture.jpg)
 
@@ -89,7 +89,7 @@ The microcontroller I choose to use for my first prototype was the arduino Nano,
 
 ## GPS Module
 
-The choice of this module depended on how much space and power it takes, its price and also for its availability on the aliexpress market. So the choice fell on the BN-220 module that weighs 5.3g, with a dimension of 22mm*20mm\*6mm and with current consumption of : 50mA (Active mode) - 7.5mA (standby mode) . This module is based on the ublox-M8030 chip, it contains a Flash memory that allows to save configuration and has an UART interface.
+The choice of this module depended on how much space and power it takes, its price and also for its availability on the AliExpress market. Thus, I opted for the BN-220 module that weighs 5.3g, with a dimension of 22mm*20mm\*6mm and with current consumption of : 50mA (Active mode) - 7.5mA (standby mode) . This module is based on the ublox-M8030 chip, it contains a Flash memory that allows to save configuration and has a UART interface.
 
 
 ## GSM/GPRS Module
@@ -99,7 +99,7 @@ I chose the A9 module from AI-Thinker because it's lightweight, offers several f
 
 ## Reduce Power
 
-There is a low power mode that can be enabled by software in modules when they are inactive and can minimize power consumption, but the value consummed cannot be considered negligible that why to extend more life battery I searched for latch switch circuit that can cut-off definitly power from modules connected to Arduino and thus reducing significantly power consumption.
+There is a low power mode that can be enabled by software in modules when they are inactive and can minimize power consumption, but the consumed value is not negliglible. For this reason, and with an aim to extend the battery life, I searched for latch switch circuit that can definitely cut power off from modules, and hence significantly reducing power consumption.
 
 
 ## Solar Panel
@@ -164,16 +164,16 @@ In the following sections I describe how each module works and how to establish 
 
 ## BN-220 GPS
 
-When the GPS is on, the GPS satellites broadcast the signals and GPS receivers use the signals and some calculation to provide periodicly some informations like latitude, longitude and altitude in format of NMEA 0182 protocol. 
+When the GPS is on, the GPS satellites broadcast the signals and GPS receivers use the signals and some calculation to provide periodically some informations like latitude, longitude and altitude in format of NMEA 0182 protocol. 
 
-The types of informations generated depends on which sentence of protocol NMEA is chosen. So as to configure the GPS module either use the u-Center software which has GUI and easy to use (this software is compatible with just ublox chip) or by sending to RX pin of GPS module commands which can be found in ublox chip datasheet.
+The types of information generated depend on what sentence of protocol NMEA is chosen. So as to configure the GPS module either use the u-Center software which has GUI and easy to use (this software is compatible with just ublox chip) or by sending to RX pin of GPS module commands which can be found in ublox chip datasheet.
 
-The communication is done through the UART interface and when data is received, microcontroller parse it, check it validity and and extract from it the informations needed.
+The communication is done through the UART interface and when data is received, the microcontroller parses it, checks it validity and extracts from it the information needed.
 
 
 ## A9 GSM/GPRS
 
-After that microcontroller gathered necesseraly data, it creates an HTTP request and send it by using the A9 GPS/GPRS module which is a modem that use GSM AT-commands to communicate with microcontroller. Here you can find reference to differents AT-commands supported by this module : [link here](https://docs.ai-thinker.com/_media/b_and_t/nb-iot/n92/kaifazhidaowendang/rda8908a_at_commandmanual9.0.pdf)
+After that microcontroller has gathered necesseraly data, it creates an HTTP request and sends it by using the A9 GPS/GPRS module which is a modem that uses GSM AT-commands to communicate with the microcontroller. Here you can find reference to differents AT-commands supported by this module : [link here](https://docs.ai-thinker.com/_media/b_and_t/nb-iot/n92/kaifazhidaowendang/rda8908a_at_commandmanual9.0.pdf)
 
 The communication is also done through UART interface.
 
@@ -193,7 +193,7 @@ The system execution will follow the steps described in this diagram :
 
 For the development of the web plateform, I used the following languages and technologies : Javascript, NodeJS, HTML, CSS, Leaflet. 
 
-The server processes the post request received by the tracking system, it retrieves position and battery level then store it in the local database which is controled by the NeDB API. The data is requested periodically through the user web page using HTTP protocol, then the data is returned in JSON format and mapped into Leaflet map.
+The server processes the post request received by the tracking system, it retrieves the position and battery level then stores it in the local database which is controled by the NeDB API. The data is requested periodically through the user web page using HTTP protocol, then the data is returned in JSON format and mapped into Leaflet map.
 
 The following image clearly shows the web architecture :
 
