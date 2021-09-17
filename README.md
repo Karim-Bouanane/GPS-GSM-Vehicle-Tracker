@@ -3,13 +3,17 @@
 # **Dedication**
 
   I dedicate this project to God Almighty my creator. I also dedicate this work to my two families who have offered me enormous encouragement and support, the first is my parents my sister my brother and my friend Ahmed Bangoura who is my second brother. My second family is the students of ENSIAS school who commit themselves to hard work and to making the school better with their sense of help and sharing.
-    
+  
+# **Final Result**
+
+![System Design Architecture](img/Hardware_Realization.jpg)
+
 # **Table of Content**
 
 - [**GPS/GPRS Vehicle Tracker**](#gpsgprs-vehicle-tracker)
 - [**Dedication**](#dedication)
+- [**Final Result**](#final-result)
 - [**Table of Content**](#table-of-content)
-- [**Wishlist**](#wishlist)
 - [**Source Files**](#source-files)
 - [**Description**](#description)
 - [**Overview**](#overview)
@@ -31,34 +35,25 @@
   - [Screen Shot of the Web Application](#screen-shot-of-the-web-application)
 - [**Experimental Results**](#experimental-results)
 
-# **Wishlist**
-
-For Version 2.0
-- Improve to a smaller microcontroller like ATTINY-85
-- Use UBX protocol instead of NMEA protocol in GPS module
-- Make my system independent ofrom the car battery
-- Add car motion detection
-- Add authentification web page
-- Add option in web page to show history of tracking for specific date
-
 
 # **Source Files**
     .
     ├── driver              # Driver for peripherals
-    |   ├── adc.cpp             # Driver for analog to digital converter of ATMEGA328 
     |   ├── uart.cpp            # Driver for the UART protocol of ATMEGA328
-    |   └── softuart.cpp        # Library that use GPIO and interrupt to simulate protocol UART
+    |   └── softuart.cpp        # Driver for GPIO and interrupt to simulate the protocol UART
     ├── img                 # README files (images) 
     ├── lib                 # Libraries for modules and functionalities of microcontroller
-    |   ├── A9.cpp              # Lib for A9 GSM/GPRS module
-    |   ├── GPS.cpp             # Lib for parsing NMEA sentences given by the GPS
+    |   ├── GPRS.cpp            # Lib for A9 GSM/GPRS module
+    |   ├── UBXGPS.cpp          # Lib for parsing UBX messages given by the Ublox GPS
+    |   ├── Ublox.cpp           # Lib for the protocol UBX to communicate with the Ublox device
+    |   ├── ErrorHandler.cpp    # 
+    |   ├── Timer.h             # Lib for timer counter
     |   ├── Power.h             # Lib for power management of ATMEGA328
     |   └── Sleep.h             # Lib to control sleep modes of ATMEGA328 
     ├── webApp              # Web application source files
-    |   ├── node_modules        # Folder containing node modules required for server application to work 
-    |   ├── db                  # Folder containing the database files
+    |   ├── track.db            # Database file
     |   ├── home.html           # Home web page
-    |   └── server.js           # Server app javascript program
+    |   └── app.js              # Server app
     ├── main.cpp            # Main program
     ├── LICENSE
     └── README.md    
@@ -84,7 +79,7 @@ As shown in the following image, the location is acquired from satellite using G
 
 # **Hardware**
 
-The microcontroller I choose to use for my first prototype was the arduino Nano, its specification satisfy my need for this project. It can operate at a frequency up tp 16Mhz, it can go into different sleep modes, it has enough GPIOS and UART-I2C-ADC peripherals which are the only ones needed for this application.
+The microcontroller I choose to use for my first prototype was the arduino Nano, its specification satisfy my need for this project. It can operate at a frequency up tp 16Mhz, it can go into different sleep modes, it has enough GPIOS and UART peripheral which are the only ones needed for this application.
 
 
 ## GPS Module
@@ -99,26 +94,24 @@ I chose the A9 module from AI-Thinker because it's lightweight, offers several f
 
 ## Reduce Power
 
-There is a low power mode that can be enabled by software in modules when they are inactive and can minimize power consumption, but the consumed value is not negliglible. For this reason, and with an aim to extend the battery life, I searched for latch switch circuit that can definitely cut power off from modules, and hence significantly reducing power consumption.
+Working on it for the next verion when the system will be independent from the car usb power.
 
 
 ## Solar Panel
 
-Working on it for version 2.0
+Working on it for the next version.
 
 
 ## Bill of Materials
 
-All materiels discussed was bought from AliExpress and here is the bill:
+All materiels discussed were bought from AliExpress and here is the bill:
 
 Material | Price
 ---------|------
 Arduino Nano | 3.4$
 BN-220 GPS | 9.8$
 Ai-Thinker A9 GPRS/GSM | 11$
-Switch Latch module | 
-Lipo Battery Charger TP4056 | 0.4$
-**Total** | 24.6$
+**Total** | 24.2$
 
 
 ## More Materials
@@ -136,7 +129,7 @@ So I used [FTDI chip](https://a.aliexpress.com/_m0YMKaJ) that convert USB protoc
 
 The image below shows how wiring between different parts of system was done:
 
-![Schematic Design](img/Schematic_Design_V1.jpg)
+![Schematic Design](img/Schematic_Design_Minimalist_Version.jpg)
 
 
 ## Measured Current
@@ -150,23 +143,31 @@ The software for this project can be split up into two parts: **Firmware and Web
 
 When client is connected, the server serves it the HTML webpage containing a map showing the tracking of the user vehicle.
 
-Currently the website is hosted at : https://gps--tracker.herokuapp.com
+Currently the website is hosted at : https://karim-gps.glitch.me/
 
 
 ## Firmware Part
 
 The firmware is not based on arduino Framework, instead it uses pure C and C++ so as to take less memory and can be uploaded even to smaller chips like ATTINY85.
 
-So as to free up more space, I decided to get rid of the bootloader (it also make starting of microcontroller fast) and to write my own drivers and libraries. 
+I realized this project for the simple reason of deepening my knowledge in the field of microcontroller and that's why I decided to write all my own libraries and drivers. This helps me to free up more space.
 
 In the following sections I describe how each module works and how to establish communication with them.
 
 
 ## BN-220 GPS
 
-When the GPS is on, the GPS satellites broadcast the signals and GPS receivers use the signals and some calculation to provide periodically some informations like latitude, longitude and altitude in format of NMEA 0182 protocol. 
+When the GPS is on, the GPS satellites broadcast the signals and GPS receivers use the signals and some calculation to provide periodically some informations like latitude, longitude and altitude in format of NMEA or UBX protocol which is more compact. 
 
-The types of information generated depend on what sentence of protocol NMEA is chosen. So as to configure the GPS module either use the u-Center software which has GUI and easy to use (this software is compatible with just ublox chip) or by sending to RX pin of GPS module commands which can be found in ublox chip datasheet.
+The types of information generated depend on what sentence of protocol NMEA or UBX is chosen. So as to configure the GPS module either use the u-Center software which has GUI and easy to use (this software is compatible with just ublox chip) or by sending to the RX pin of GPS module the commands which can be found in ublox chip datasheet.
+
+I enabled these UBX messages: 
+- **NAV_POSSLH** :
+  - **size =** 28 Bytes
+  - **contents =** latitude, longitude ....
+- **NAV_STATUS** : 
+  - **size =**  16 Bytes 
+  - **contents =** gpsFix, ....
 
 The communication is done through the UART interface and when data is received, the microcontroller parses it, checks it validity and extracts from it the information needed.
 
@@ -185,15 +186,15 @@ The communication is also done through UART interface.
 The system execution will follow the steps described in this diagram :
 
 <p align="center">
-    <image src="img/Execution_Flow _Diagram.png">
+    <image src="img/Firmware_Flowchart_Diagram.jpg">
 </p>
 
 
 ## Web Part
 
-For the development of the web plateform, I used the following languages and technologies : Javascript, NodeJS, HTML, CSS, Leaflet. 
+For the development of the web plateform, I used the following languages, library and technology : Javascript, NodeJS, HTML, CSS, Leaflet. 
 
-The server processes the post request received by the tracking system, it retrieves the position and battery level then stores it in the local database which is controled by the NeDB API. The data is requested periodically through the user web page using HTTP protocol, then the data is returned in JSON format and mapped into Leaflet map.
+The server processes the post request received by the tracking system, it retrieves the position then stores it in the local database which is controled by the NeDB API. The data is requested periodically through the user web page using HTTP protocol, then the data is returned in JSON format and mapped into Leaflet map.
 
 The following image clearly shows the web architecture :
 
@@ -202,7 +203,7 @@ The following image clearly shows the web architecture :
 
 ## Screen Shot of the Web Application
 
-In progress.
+![client_server](img/WebPage_Screenshot.png)
 
 
 # **Experimental Results**
