@@ -8,23 +8,21 @@
 #ifndef SLEEP_H_
 #define SLEEP_H_
 
-
 #include <avr/io.h>
-#define _BV(x) (uint8_t)(1 << x)
 
+/* 
+ Sleeping Mode
 
-/* Sleeping Mode
+	You can find useful information about current consumption and enabled 
+	peripherals during each sleep mode
 
-You can find useful information about current consumption and enabled 
-modules during each sleep mode
+	https://www.rocketscream.com/blog/2011/07/04/lightweight-low-power-arduino-library/
 
-https://www.rocketscream.com/blog/2011/07/04/lightweight-low-power-arduino-library/
-
-Note: Power-down Mode
-    Only an external reset, a watchdog system reset, a watchdog interrupt,
-a brown-out reset, a 2-wire serial interface address match, an external
-level interrupt on INT0 or INT1, or a pin change interrupt can wake up
-the MCU                                                 
+	Note: Power-down Mode
+		Only an external reset, a watchdog system reset, a watchdog interrupt,
+	a brown-out reset, a 2-wire serial interface address match, an external
+	level interrupt on INT0 or INT1, or a pin change interrupt can wake up
+	the MCU                                                 
 */  
 
 typedef enum
@@ -45,8 +43,8 @@ typedef enum
 #define sleep_cpu()				__asm__ __volatile__ ( "sleep" "\n\t" :: )
 
 
-#define goTosleep(mode)	\
-do {					\
+#define goTosleep(mode)		\
+do {						\
 	set_sleep_mode(mode);	\
 	cli();					\
 	sleep_enable();			\
@@ -78,8 +76,8 @@ typedef enum
 
 
 #define wdt_reset()					__asm__ __volatile__ ("wdr")
-#define wdt_enable_interrupt()		(WDTCSR =  _BV(WDCE) | _BV(WDE))
-#define wdt_set_timeout(period)		(WDTCSR =  _BV(WDIE)| period)
+#define wdt_enable()				(WDTCSR =  _BV(WDCE) | _BV(WDE))
+#define wdt_set_timeout(period)		(WDTCSR =  _BV(WDIE)| period)		// mode interrupt
 
 #define wakeupAfter(period)	\
 do {						\
@@ -105,7 +103,7 @@ ISR(WDT_vect)
 
 
 /* 
-	Note: When waking up
+ Note: When waking up
 
 	If an enabled interrupt occurs while the MCU is in a sleep mode, the MCU wakes up. 
 	The MCU is then halted for four cycles in addition to the start-up time, executes 

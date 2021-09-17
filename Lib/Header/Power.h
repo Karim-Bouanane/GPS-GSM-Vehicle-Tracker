@@ -1,8 +1,8 @@
 /*
  * power.h
  *
- * Created: 27/02/2021 15:39:25
- *  Author: Karim Bouanane
+ * 
+ * Author: Karim Bouanane
  */ 
 
 #ifndef POWER_H_
@@ -36,37 +36,28 @@
 #define power_usart0_on()   (PRR &= (uint8_t)~(1 << PRUSART0))
 #define power_usart0_off()  (PRR |= (uint8_t)(1 << PRUSART0))
 
+#define enable_pullup()		(MCUCR &= ~(1<<PUD))
+
 /* 
-Power off all unnecessary modules
+ Important Note about turning off a peripheral
 	
 		Data sheet mention that peripheral when turned off, it freezes in its 
 	current state with I/O registers becoming inaccessible. Also the resources
 	used by this peripheral would remain unoccupied. So its suggested to disable
 	the peripheral before stopping the clock to it.
+	Example:
+			disable_adc();
+			power_adc_off();
  
  */
 
-#define let_needed_modules()  \
-do{				\
-disable_adc();	\
-power_adc_off(); \
-					\
-power_ac_off();		\
-power_spi_off();	\
-power_timer1_off();	\
-power_timer2_off();	\
-power_twi_off();	\
-power_usart0_off();	\
-}while(0)
-
-
 
 /*
- Unconnected Pins
+ Important Note about Unconnected Pins
  
 		Floating inputs should be avoided to reduce current consumption in all
 	other modes where the digital inputs are enabled (Reset, Active Mode and
-	Idle Mode). We need to use puul_up or pull_down to reduce power.
+	Idle Mode). We need to use pull_up or pull_down to reduce power.
  
 	Active Mode - 5V @16Mhz
  
@@ -80,17 +71,15 @@ power_usart0_off();	\
 	 
 */
 
-#define enable_pullup() (MCUCR &= ~(1<<PUD))
 
 #define lowPowerIO() \
-do{						\
-	enable_pullup();	\
-	DDRB = 0;			\
-	DDRC = 0;			\
-	DDRD = 0;			\
-	PORTB = 0b00011111;		\
-	PORTC = 0b00111111;		\
-	PORTD = 0b11111111;		\
+do{					\
+	DDRB = 0xFF;	\
+	DDRC = 0xFF;	\
+	DDRD = 0xFF;	\
+	PORTB = 0;		\
+	PORTC = 0;		\
+	PORTD = 0;		\
 }while(0)				
 
 
